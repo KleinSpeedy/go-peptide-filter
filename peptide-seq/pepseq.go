@@ -9,6 +9,14 @@ import (
 	"strconv"
 )
 
+// TODO: Let prefix be specified on program startup
+// fasta format usually starts with one >, we have 2
+const FastaSeqIdPrefix string = ">>"
+
+// comments are indicated by a semicolon and should be put
+// between seq ID and peptide seq
+const FastaComment string = "; "
+
 // represents a peptide sequence with its identifier
 // and calculated mass
 // read from a fasta file
@@ -18,27 +26,11 @@ type PeptideSeq struct {
 	mass    float64 // calculated mass of peptide
 }
 
-// represents a slice of read peptides
-type PeptideSeqResults struct {
-	seqeuences []PeptideSeq
-	len        uint
-
-	head uint
-}
-
 func NewPeptideSeq(seq string, peptide string) PeptideSeq {
 	return PeptideSeq{
 		seqId:   seq,
 		peptide: peptide,
 		mass:    0,
-	}
-}
-
-func NewPeptideSeqResults() PeptideSeqResults {
-	return PeptideSeqResults{
-		seqeuences: make([]PeptideSeq, 0),
-		len:        0,
-		head:       0,
 	}
 }
 
@@ -81,23 +73,16 @@ func (ps *PeptideSeq) String() string {
 		ps.seqId, ps.peptide, ps.mass)
 }
 
-// appends a new peptide to results
-func (res *PeptideSeqResults) Append(ps PeptideSeq) {
-	res.seqeuences = append(res.seqeuences, ps)
-	res.len++
+// Prints the peptide with its sequence ID in a fasta conform way
+// does not print the mass as a comment
+func (ps *PeptideSeq) Write() string {
+	return fmt.Sprintf("%s\n%s\n", (FastaSeqIdPrefix + ps.seqId), ps.peptide)
 }
 
-// get number of peptides stored in results slice
-func (res *PeptideSeqResults) Length() uint {
-	return res.len
-}
-
-// prints the peptide in a fasta conform way
-func (res *PeptideSeqResults) PrintCurrent() string {
-	seqLine := res.seqeuences[res.head].seqId
-	mass := "; " + strconv.FormatFloat(res.seqeuences[res.head].mass, 'f', -1, 64)
-	pepLine := res.seqeuences[res.head].peptide
-	res.head++
-
-	return fmt.Sprintf("%s\n%s\n%s\n", seqLine, mass, pepLine)
+// Prints the peptide with its sequence ID in a fasta conform way
+// adds the peptide mass as a comment
+func (ps *PeptideSeq) WriteWithComment() string {
+	id := (FastaSeqIdPrefix + ps.seqId)
+	massStr := FastaComment + strconv.FormatFloat(ps.mass, 'f', -1, 64)
+	return fmt.Sprintf("%s\n%s\n%s\n", id, massStr, ps.peptide)
 }

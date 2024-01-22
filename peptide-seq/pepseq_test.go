@@ -26,17 +26,3 @@ func TestPepseqCalculateMassInvalid(t *testing.T) {
 		t.Errorf("Got no error but expected calculation to fail")
 	}
 }
-
-func TestPeptideSeqResultsLength(t *testing.T) {
-	res := peptideseq.NewPeptideSeqResults()
-	if res.Length() != 0 {
-		t.Errorf("Length of pepeseq result is %d, expected 0", res.Length())
-	}
-
-	temp := peptideseq.NewPeptideSeq("abc", "ABC")
-	res.Append(temp)
-
-	if res.Length() != 1 {
-		t.Errorf("Length of pepeseq result is %d, expected 1", res.Length())
-	}
-}

@@ -10,14 +10,6 @@ import (
 	"sync"
 )
 
-// TODO: Let prefix be specified on program startup
-// fasta format usually starts with one >, we have 2
-const seqIdPrefix string = ">>"
-
-// comments are indicated by a semicolon and should be put
-// between seq ID and peptide seq
-const fastaComment string = ";"
-
 type Filter struct {
 	out chan<- peptideseq.PeptideSeq
 	wg  *sync.WaitGroup
@@ -35,7 +27,7 @@ func readSequenceIdentifier(s string) (string, error) {
 		return "", fmt.Errorf("read an empty string")
 	}
 
-	str := strings.TrimPrefix(s, seqIdPrefix)
+	str := strings.TrimPrefix(s, peptideseq.FastaSeqIdPrefix)
 	if str == s {
 		return "", fmt.Errorf("sequence identifier did not have start prefix")
 	}
