@@ -61,8 +61,8 @@ func (ps *PeptideSeq) CalucalteMass() error {
 
 		sum = sum + float64(pepMass)
 	}
-	val := (len(ps.peptide) - 2) * 18
-	ps.mass = sum - float64(val)
+
+	ps.mass = sum - float64(len(ps.peptide)-1)*18.02
 	return nil
 }
 
