@@ -74,15 +74,18 @@ func (ps *PeptideSeq) String() string {
 }
 
 // Prints the peptide with its sequence ID in a fasta conform way
-// does not print the mass as a comment
-func (ps *PeptideSeq) Write() string {
-	return fmt.Sprintf("%s\n%s\n", (FastaSeqIdPrefix + ps.seqId), ps.peptide)
-}
+// specify through argument whether to print with or without comments
+func (ps *PeptideSeq) Write(withComments bool) string {
+	var pepstring string
 
-// Prints the peptide with its sequence ID in a fasta conform way
-// adds the peptide mass as a comment
-func (ps *PeptideSeq) WriteWithComment() string {
 	id := (FastaSeqIdPrefix + ps.seqId)
 	massStr := FastaComment + strconv.FormatFloat(ps.mass, 'f', -1, 64)
-	return fmt.Sprintf("%s\n%s\n%s\n", id, massStr, ps.peptide)
+
+	if withComments {
+		pepstring = fmt.Sprintf("%s\n%s\n%s\n", id, massStr, ps.peptide)
+	} else {
+		pepstring = fmt.Sprintf("%s\n%s\n", id, ps.peptide)
+	}
+
+	return pepstring
 }

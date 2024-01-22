@@ -14,6 +14,8 @@ type Filter struct {
 	wg  *sync.WaitGroup
 }
 
+type OutputFunc func(peptideseq.PeptideSeq) error
+
 func NewFilter(wg *sync.WaitGroup, results chan<- peptideseq.PeptideSeq) *Filter {
 	return &Filter{
 		out: results,
@@ -85,7 +87,7 @@ func (fl *Filter) FilterWithRange(filename string, start, end float64, errChan c
 	}
 }
 
-func WritePeptideSequencesToFile(name string, results <-chan peptideseq.PeptideSeq, wg *sync.WaitGroup) {
+func WritePeptideSequences(out OutputFunc, results <-chan peptideseq.PeptideSeq, errChan chan error, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for {
@@ -93,6 +95,10 @@ func WritePeptideSequencesToFile(name string, results <-chan peptideseq.PeptideS
 		if !ok {
 			break
 		}
-		fmt.Println(ps.String())
+		err := out(ps)
+		if err != nil {
+			errChan <- err
+			return
+		}
 	}
 }
