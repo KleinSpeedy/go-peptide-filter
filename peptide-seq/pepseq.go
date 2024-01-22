@@ -70,10 +70,14 @@ func (ps *PeptideSeq) GetMass() float64 {
 	return ps.mass
 }
 
+func (ps *PeptideSeq) MassIsInRange(start, end float64) bool {
+	return (ps.mass >= start) && (ps.mass <= end)
+}
+
 // stringify contents of peptide sequence structure
 // Note: does not conform to fasta specific structure
 func (ps *PeptideSeq) String() string {
-	return fmt.Sprintf("ID: %s\nPeptide: %s\n Mass: %f\n",
+	return fmt.Sprintf("ID: %s\nPeptide: %s\nMass: %f",
 		ps.seqId, ps.peptide, ps.mass)
 }
 
