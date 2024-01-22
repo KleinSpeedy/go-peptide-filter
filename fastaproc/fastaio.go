@@ -3,7 +3,6 @@ package fastaproc
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	peptideseq "peptide-analyse/peptide-seq"
 	"strings"
@@ -71,7 +70,8 @@ func (fl *Filter) FilterWithRange(filename string, start, end float64, errChan c
 
 		ps := peptideseq.NewPeptideSeq(seqId, pep)
 		if err = ps.CalucalteMass(); err != nil {
-			log.Fatal("error computing mass")
+			errChan <- err
+			return
 		}
 
 		// send new peptide if mass is in range

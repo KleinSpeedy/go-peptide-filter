@@ -42,12 +42,11 @@ func CliAction(cctx *cli.Context) error {
 	// wait for write to file to finish
 	wgRecieve.Wait()
 
-	// check if errors occured
-	err, ok := <-errChan
-	if !ok && err != nil {
+	close(errChan)
+	err := <-errChan
+	if err != nil {
 		return err
 	}
-	close(errChan)
 
 	return nil
 }
