@@ -15,18 +15,23 @@ func printUsage(s string) {
 	fmt.Println(usage)
 }
 
+func printErrorAndExit(s string) {
+	fmt.Printf("Error: %s\n", s)
+	os.Exit(1)
+}
+
 func main() {
 	if len(os.Args) <= 2 {
 		printUsage("Wrong number of argments")
-		return
+		os.Exit(1)
 	}
 
 	// TODO: Use min and max range
 	if _, err := strconv.ParseUint(os.Args[1], 10, 64); err != nil {
-		log.Fatal("error converting minimum range value")
+		printErrorAndExit(err.Error())
 	}
 	if _, err := strconv.ParseUint(os.Args[2], 10, 64); err != nil {
-		log.Fatal("error converting maximum range value")
+		printErrorAndExit(err.Error())
 	}
 
 	fs, err := os.Open("test.fasta")

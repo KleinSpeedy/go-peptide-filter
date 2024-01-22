@@ -2,6 +2,8 @@ package aminoacid
 
 import "fmt"
 
+// aminoacid map assigning mass to
+// single-letter aminoacid codes
 var aminoacidMassMap = map[byte]uint{
 	'A': 89,
 	'C': 121,
@@ -26,16 +28,19 @@ var aminoacidMassMap = map[byte]uint{
 	'Y': 181,
 }
 
+// check whether the one-letter code is a aminoacid
 func IsAminoacid(aa byte) bool {
 	// ignore error
 	_, ok := aminoacidMassMap[aa]
 	return ok
 }
 
+// get mass from aminoacid mass map
+// returns error if aminoacid does not exist
 func GetAminoacidMass(aa byte) (uint, error) {
 	mass, ok := aminoacidMassMap[aa]
 	if !ok {
-		return 0, fmt.Errorf("not an aminoacid: %b\n", aa)
+		return 0, fmt.Errorf("not an aminoacid: %s\n", string(aa))
 	}
 	return mass, nil
 }
