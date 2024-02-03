@@ -1,10 +1,11 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"peptide-analyse/pepcli"
 	"sort"
+	"time"
 
 	"github.com/urfave/cli/v2"
 )
@@ -21,6 +22,8 @@ func main() {
 	sort.Sort(cli.FlagsByName(app.Flags))
 
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err.Error())
+		ts := time.Now().Format(time.DateTime)
+		fmt.Println("Program exited with errors - ", ts)
+		fmt.Print(err)
 	}
 }

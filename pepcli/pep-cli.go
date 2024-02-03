@@ -45,6 +45,7 @@ func CliAction(cctx *cli.Context) error {
 		if err != nil {
 			return err
 		}
+		defer outFile.Close()
 
 		// write to file
 		outputFunc = func(ps peptideseq.PeptideSeq) error {
@@ -55,7 +56,6 @@ func CliAction(cctx *cli.Context) error {
 			return nil
 		}
 	}
-	defer outFile.Close()
 
 	// ok to pass file name here, we checked if it exists before
 	for _, file := range files {
@@ -76,22 +76,24 @@ func CliAction(cctx *cli.Context) error {
 	wgRecieve.Wait()
 
 	close(errChan)
-	err = <-errChan
-	if err != nil {
-		return err
+
+	var pe pepError
+	for err := range errChan {
+		pe.addErrorString(err.Error())
 	}
 
-	return nil
+	return pe.getError()
 }
 
+// checks cli inputs
 func CheckBefore(cctx *cli.Context) error {
 	if minRange > maxRange {
-		return fmt.Errorf("Invalid range given: start %f - stop %f", minRange, maxRange)
+		return fmt.Errorf("Invalid range given: start %f - stop %f\n", minRange, maxRange)
 	}
 
 	files := cctx.StringSlice("files")
 	if len(files) == 0 {
-		return fmt.Errorf("no files specified")
+		return fmt.Errorf("no files specified\n")
 	}
 
 	// check if files exist and is not a directory
@@ -101,7 +103,7 @@ func CheckBefore(cctx *cli.Context) error {
 			return err
 		}
 		if info.IsDir() {
-			return fmt.Errorf("%s is a directory, not a file", info.Name())
+			return fmt.Errorf("%s is a directory, not a file\n", info.Name())
 		}
 	}
 

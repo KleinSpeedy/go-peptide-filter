@@ -48,19 +48,21 @@ func (fl *Filter) FilterWithRange(filename string, start, end float64, errChan c
 
 	scanner := bufio.NewScanner(fd)
 	if scanner == nil {
-		errChan <- fmt.Errorf("Error allocating new scanner")
+		errChan <- fmt.Errorf("Error allocating new scanner\n")
 		return
 	}
 
 	seqIdRead := false
 	var seqId, pep string
+	line := 0
 
 	for scanner.Scan() {
 		// first read sequence id on its own line
 		if !seqIdRead {
+			line++
 			seqId, err = readSequenceIdentifier(scanner.Text())
 			if err != nil {
-				errChan <- err
+				errChan <- fmt.Errorf("Error on line %d in file %s: %s\n", line, filename, err)
 				return
 			}
 
@@ -69,10 +71,11 @@ func (fl *Filter) FilterWithRange(filename string, start, end float64, errChan c
 		}
 		// after reading sequence id read peptide sequence
 		pep = scanner.Text()
+		line++
 
 		ps := peptideseq.NewPeptideSeq(seqId, pep)
 		if err = ps.CalucalteMass(); err != nil {
-			errChan <- err
+			errChan <- fmt.Errorf("Error on line %d in file %s: %s\n", line, filename, err)
 			return
 		}
 
