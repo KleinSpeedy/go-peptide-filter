@@ -28,6 +28,10 @@ func readSequenceIdentifier(s string) (string, error) {
 		return "", fmt.Errorf("read an empty string")
 	}
 
+	if strings.Contains(s, " ") {
+		return "", fmt.Errorf("string contained space")
+	}
+
 	str := strings.TrimPrefix(s, peptideseq.FastaSeqIdPrefix)
 	if str == s {
 		return "", fmt.Errorf("sequence identifier did not have start prefix")

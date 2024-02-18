@@ -31,7 +31,7 @@ containing the CLI binary (Linux) or `.exe` (Windows).
 
 > [!NOTE]
 > All examples are shown using Linux syntax, if you are on Windows, simply drop
-> the `./` and add a `.exe` after the tool name.
+> the `./` -> `peptide-analyse.exe ...` instead of `./peptide-analyse ...`.
 
 This reads all sequences from `test.fasta` and prints all peptides with a mass between
 900 to 1200 to stdout.
@@ -62,11 +62,13 @@ ELVFVPASA
 
 ## Development
 
+If you want to build the cli application locally:
 ```sh
-# build binary
 go build .
+```
 
-# Run tests
+Run tests locally in project directory:
+```sh
 go test -v ./...
 ```
 
@@ -76,5 +78,4 @@ See [LICENSE](LICENSE).
 
 ## TODOs
 
-* Add more tests
 * Fix floating point comparison using epsilon offset
