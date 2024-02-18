@@ -78,4 +78,7 @@ See [LICENSE](LICENSE).
 
 ## TODOs
 
-* Fix floating point comparison using epsilon offset
+* Mass range is checked using `>=` and `<=` operator
+    * introduce better mass range check
+    * check performance impact on huge datasets
+    * See [here](https://floating-point-gui.de/errors/comparison/)
